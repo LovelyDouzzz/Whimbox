@@ -1,5 +1,5 @@
 import whimbox.task.daily_task as daily_task
-from whimbox.task.navigation_task.common import get_path_json_name
+from whimbox.task.navigation_task.common import path_manager
 from whimbox.task.navigation_task.auto_path_task import AutoPathTask
 from whimbox.task.navigation_task.record_path_task import RecordPathTask
 from whimbox.task.photo_task.daily_photo_task import DailyPhotoTask
@@ -122,14 +122,14 @@ async def navigation_task(target=None, type=None, count=None) -> dict:
         (target=发卡蚱蜢, count=1)
         (type=钓鱼, count=3)
     """
-    path_json_name = get_path_json_name(target, type, count)
-    if path_json_name is None:
+    path_record = path_manager.query_path(target=target, type=type, count=count, return_one=True)
+    if path_record is None:
         return {
             "status": STATE_TYPE_ERROR,
             "message": f"没有符合要求的跑图路线"
         }
     else:
-        task = AutoPathTask(path_json_name, excepted_num=count)
+        task = AutoPathTask(path_record=path_record, excepted_num=count)
         task_result = task.task_run()
         return task_result.to_dict()
 
@@ -144,16 +144,16 @@ async def load_path(path_name: str) -> dict:
     Returns:
         dict: 包含操作状态的字典，包含status和message字段
     """
-    path_json_name = f'{path_name}.json'
-    if os.path.exists(os.path.join(SCRIPT_PATH, path_json_name)):
-        task = AutoPathTask(path_json_name)
-        task_result = task.task_run()
-        return task_result.to_dict()
-    else:
+    path_record = path_manager.query_path(path_name=path_name)
+    if path_record is None:
         return {
             "status": STATE_TYPE_ERROR,
-            "message": f"路径文件{path_json_name}不存在"
+            "message": f"路线{path_name}不存在"
         }
+    else:
+        task = AutoPathTask(path_record=path_record)
+        task_result = task.task_run()
+        return task_result.to_dict()
 
 @mcp.tool()
 async def record_path() -> dict:

@@ -56,67 +56,72 @@ class UI():
             destination (Page):
             confirm_wait:
         """
-        retry_timer = AdvanceTimer(1)
-        self.switch_ui_lock.acquire()
-        # Reset connection
-        for page in ui_pages:
-            page.parent = None
+        try:
+            retry_timer = AdvanceTimer(1)
+            self.switch_ui_lock.acquire()
+            # Reset connection
+            for page in ui_pages:
+                page.parent = None
 
-        # Create connection
-        visited = [destination]
-        visited = set(visited)
-        while 1:
-            new = visited.copy()
-            for page in visited:
-                for link in ui_pages:
-                    if link in visited:
-                        continue
-                    if page in link.links:
-                        link.parent = page
-                        new.add(link)
-            if len(new) == len(visited):
-                break
-            visited = new
-
-        logger.info(f"UI goto {destination}")
-        while 1:
-            # Destination page
-            if destination.is_current_page(itt):
-                logger.debug(f'Page arrive: {destination}')
-                break
-
-            # Other pages
-            clicked = False
-            for page in visited:
-                if page.parent is None or len(page.check_icon_list) == 0:
-                    continue
-                if page.is_current_page(itt):
-                    logger.debug(f'Page switch: {page} -> {page.parent}')
-                    button = page.links[page.parent]
-                    if isinstance(button, str):
-                        if retry_timer.reached():
-                            itt.key_press(button)
-                            retry_timer.reset()
-                    elif isinstance(button, Button):
-                        itt.appear_then_click(button)
-                    elif isinstance(button, Text):
-                        itt.appear_then_click(button)
-                    clicked = True
-                    itt.delay(0.5, comment="ui goto is waiting game animation")
+            # Create connection
+            visited = [destination]
+            visited = set(visited)
+            while 1:
+                new = visited.copy()
+                for page in visited:
+                    for link in ui_pages:
+                        if link in visited:
+                            continue
+                        if page in link.links:
+                            link.parent = page
+                            new.add(link)
+                if len(new) == len(visited):
                     break
-            if clicked:
-                continue
+                visited = new
 
-            # Additional
-            if self.ui_additional():
-                continue
+            logger.info(f"UI goto {destination}")
+            while 1:
+                # Destination page
+                if destination.is_current_page(itt):
+                    logger.debug(f'Page arrive: {destination}')
+                    break
 
-        # Reset connection
-        for page in ui_pages:
-            page.parent = None
-        self.switch_ui_lock.release()
-        itt.delay(0.5, comment="ui goto is waiting game animation")
-        # itt.wait_until_stable()
+                # Other pages
+                clicked = False
+                for page in visited:
+                    if page.parent is None or len(page.check_icon_list) == 0:
+                        continue
+                    if page.is_current_page(itt):
+                        logger.debug(f'Page switch: {page} -> {page.parent}')
+                        button = page.links[page.parent]
+                        if isinstance(button, str):
+                            if retry_timer.reached():
+                                itt.key_press(button)
+                                retry_timer.reset()
+                        elif isinstance(button, Button):
+                            itt.appear_then_click(button)
+                        elif isinstance(button, Text):
+                            itt.appear_then_click(button)
+                        clicked = True
+                        itt.delay(0.5, comment="ui goto is waiting game animation")
+                        break
+                if clicked:
+                    continue
+
+                # Additional
+                if self.ui_additional():
+                    continue
+
+            # Reset connection
+            for page in ui_pages:
+                page.parent = None
+            self.switch_ui_lock.release()
+            itt.delay(0.5, comment="ui goto is waiting game animation")
+            # itt.wait_until_stable()
+        except Exception as e:
+            logger.error(f"UI goto failed: {e}")
+            self.switch_ui_lock.release()
+            raise e
 
     def ensure_page(self, page: UIPage):
         if not self.verify_page(page):

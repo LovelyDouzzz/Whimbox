@@ -10,7 +10,19 @@ from whimbox.common.path_lib import ASSETS_PATH
 REPLACE_DICT = {}
 
 class RapidOcr():
+
+    _instance = None
+    _initialized = False
+
+    def __new__(cls):
+        """单例模式"""
+        if cls._instance is None:
+            cls._instance = super(RapidOcr, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
+        if self._initialized:
+            return
         logger.info(f"Creating RapidOCR object")
         pt = time.time()
         config_path = os.path.join(ASSETS_PATH, 'rapidocr.yaml')
@@ -19,6 +31,7 @@ class RapidOcr():
         self._lock = threading.Lock()
         # self.last_img: np.ndarray = None
         # self.last_result = None
+        self._initialized = True
 
     def _replace_texts(self, text: str):
         for i in REPLACE_DICT:
@@ -96,6 +109,6 @@ ocr = RapidOcr()
 # ---------------- 调用 Demo ----------------
 if __name__ == '__main__':
     from whimbox.interaction.interaction_core import itt
-    from whimbox.ui.ui_assets import AreaBlessHuanjingLevelsSelect
-    img = itt.capture(AreaBlessHuanjingLevelsSelect.position)
+    from whimbox.ui.ui_assets import AreaEscEntrances
+    img = itt.capture(AreaEscEntrances.position)
     print(ocr.detect_and_ocr(img, show_res=True))

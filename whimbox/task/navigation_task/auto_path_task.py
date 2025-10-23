@@ -12,17 +12,25 @@ from whimbox.action.pickup import PickupTask
 from whimbox.action.catch_insect import CatchInsectTask
 from whimbox.action.clean_animal import CleanAnimalTask
 from whimbox.action.fishing import FishingTask
+from whimbox.task.navigation_task.common import path_manager
+
 
 class AutoPathTask(TaskTemplate):
-    def __init__(self, path_file_name, excepted_num=None):
+    def __init__(self, path_record: PathRecord=None, path_name: str=None, excepted_num=None):
         super().__init__("auto_path_task")
         self.excepted_num = excepted_num # 期望的素材数量，获取到该数量后就停止
         self.step_sleep = 0.01
-        with open(os.path.join(SCRIPT_PATH, path_file_name), "r", encoding="utf-8") as f:
-            path_record = PathRecord.model_validate_json(f.read())
+        if path_record is not None:
             self.path_info = path_record.info
             self.path_points = path_record.points
-        
+        elif path_name is not None:
+            path_record = path_manager.query_path(path_name=path_name)
+            if path_record is None:
+                raise ValueError(f"路线{path_name}不存在")
+            self.path_info = path_record.info
+            self.path_points = path_record.points
+        else:
+            raise ValueError("path_record和path_name不能同时为空")
         # 各种状态记录
         self.last_position = None
         self.curr_position = None
@@ -269,6 +277,6 @@ class AutoPathTask(TaskTemplate):
 
 
 if __name__ == "__main__":
-    task = AutoPathTask("example1_采集测试.json", excepted_num=3)
-    result = task.task_run()
-    print(result)
+    task = AutoPathTask(path_name="example1_采集测试")
+    task_result = task.task_run()
+    print(task_result.to_dict())

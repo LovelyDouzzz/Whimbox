@@ -18,7 +18,6 @@ class PathInfo(BaseModel):
     count: Optional[int] = None # 目标数量
     region: Optional[str] = None
     map: Optional[str] = None
-    version: Optional[str] = None
     update_time: Optional[str] = None
     default: Optional[bool] = None # 是否默认订阅
 
@@ -35,27 +34,68 @@ class PathRecord(BaseModel):
     points: list[PathPoint]
 
 
-def get_path_json_name(target=None, type=None, count=None):
-    for file in os.listdir(SCRIPT_PATH):
-        if file.endswith(".json"):
-            with open(os.path.join(SCRIPT_PATH, file), "r", encoding="utf-8") as f:
-                try:
-                    path_record = PathRecord.model_validate_json(f.read())
-                    if target and path_record.info.target == target:
-                        if count and path_record.info.count >= count:
-                            return file
-                        elif not count:
-                            return file
-                    elif type and path_record.info.type == type:
-                        if count and path_record.info.count >= count:
-                            return file
-                        elif not count:
-                            return file
-                except Exception as e:
-                    logger.error(f"读取路径文件{file}失败: {e}")
-                    continue
-    return None
+class PathManager:
 
+    _instance = None
+    _initialized = False
+    
+    def __new__(cls):
+        """单例模式"""
+        if cls._instance is None:
+            cls._instance = super(PathManager, cls).__new__(cls)
+        return cls._instance
 
-if __name__ == "__main__":
-    print(get_path_json_name("星荧草"))
+    def __init__(self):
+        if self._initialized:
+            return
+        self.path_dict = {}
+        self._init_path_dict()
+
+        self._initialized = True
+
+    def _init_path_dict(self):
+        for file in os.listdir(SCRIPT_PATH):
+            if file.endswith(".json"):
+                with open(os.path.join(SCRIPT_PATH, file), "r", encoding="utf-8") as f:
+                    try:
+                        path_record = PathRecord.model_validate_json(f.read())
+                        path_name = path_record.info.name
+                        self.path_dict[path_name] = path_record
+                    except Exception as e:
+                        logger.error(f"读取路径文件{file}失败: {e}")
+                        continue
+
+    def query_path(self, path_name=None, target=None, type=None, count=None, return_one=False) -> list[PathRecord] | PathRecord | None:
+        # 指定名字就直接返回单文件（用于内部固定路线的任务使用，比如每日任务）
+        if path_name:
+            return self.path_dict.get(path_name, None)
+        
+        # 根据要求进行筛选
+        res = []
+        for _, path_record in self.path_dict.items():
+            match = True
+            
+            # Filter by target (exact match)
+            if target is not None:
+                if path_record.info.target != target:
+                    match = False
+            
+            # Filter by type (exact match)
+            if type is not None:
+                if path_record.info.type != type:
+                    match = False
+            
+            # Filter by count (greater than or equal)
+            if count is not None:
+                if path_record.info.count is None or path_record.info.count < count:
+                    match = False
+            
+            if match:
+                res.append(path_record)
+        
+        if return_one:
+            return res[0] if res else None
+        else:
+            return res
+
+path_manager = PathManager()

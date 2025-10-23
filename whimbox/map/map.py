@@ -382,4 +382,5 @@ if __name__ == '__main__':
     # print(res)
     
     # CV_DEBUG_MODE = True
-    nikki_map.bigmap_tp([6188, 5446.5], MAP_NAME_MIRALAND)
+    # nikki_map.bigmap_tp([6188, 5446.5], MAP_NAME_MIRALAND)
+    nikki_map.bigmap_tp([8573.2, 3639.8], MAP_NAME_MIRALAND)
