@@ -178,7 +178,8 @@ class TaskTemplate:
             self.handle_finally()
             back_to_page_main()
             # 停止键盘监听器
-            if hasattr(self, 'listener') and self.listener.is_alive():
+            self.key_callbacks.clear()
+            if self.listener.is_alive():
                 self.listener.stop()
                 self.listener.join()
             return self.task_result

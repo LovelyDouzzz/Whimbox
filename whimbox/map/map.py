@@ -116,9 +116,12 @@ class Map(MiniMap, BigMap):
     def reinit_smallmap(self) -> None:
         ui_control.ui_goto(page_bigmap)
         self.update_region_and_map_name()
-        posi = self.get_bigmap_posi()
-        logger.info(f"init_position:{posi}")
-        self.init_position(tuple(map(int, list(posi))))
+        # 如果在未支持的地图，就先传送到花愿镇
+        if self.map_name not in REGION_NAME_TO_MAP_NAME_DICT:
+            self.bigmap_tp([6425.3,4381.0], MAP_NAME_MIRALAND)
+        else:
+            posi = self.get_bigmap_posi()
+            self.init_position(tuple(map(int, list(posi))))
         ui_control.ui_goto(page_main)
         self.small_map_init_flag = True
         self.last_valid_position = self.position

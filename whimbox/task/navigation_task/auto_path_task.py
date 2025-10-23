@@ -47,10 +47,6 @@ class AutoPathTask(TaskTemplate):
         self.jump2walk_stop_time = 0.2
         self.offset = 2 # 当距离必经点offset以内，就视作已经到达
 
-        # 动作控制器
-        self.jump_controller = JumpController()
-        self.move_controller = MoveController()
-
     def merge_material_count_dict(self, material_count_dict):
         if material_count_dict is None:
             return
@@ -96,6 +92,8 @@ class AutoPathTask(TaskTemplate):
     @register_step("初始化各种信息")
     def step0(self):
         # 启动动作控制线程
+        self.jump_controller = JumpController()
+        self.move_controller = MoveController()
         self.jump_controller.start_threading()
         self.move_controller.start_threading()
         # 初始化地图信息
