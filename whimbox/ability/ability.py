@@ -209,6 +209,6 @@ ability_manager = AbilityManager()
 
 
 if __name__ == "__main__":
-    CV_DEBUG_MODE = True
-    ability_manager.change_ability(ABILITY_NAME_INSECT)
+    # CV_DEBUG_MODE = True
+    ability_manager.change_ability(ABILITY_NAME_FISH)
     # print(ability_manager.get_current_ability())

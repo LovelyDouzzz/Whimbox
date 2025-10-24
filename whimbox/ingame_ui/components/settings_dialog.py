@@ -70,7 +70,7 @@ class SettingsDialog(QDialog):
         self.setModal(True)
         self.setWindowFlags(Qt.Dialog | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
-        self.setFixedSize(600, 500)
+        self.setFixedSize(800, 800)
         
         # 创建主容器（用于圆角背景）
         main_container = QWidget(self)
@@ -201,7 +201,7 @@ class SettingsDialog(QDialog):
         main_layout.addLayout(button_layout)
         
         # 设置主容器大小和位置
-        main_container.setFixedSize(600, 500)
+        main_container.setFixedSize(800, 800)
         
         # 创建对话框布局
         dialog_layout = QVBoxLayout(self)

@@ -2,7 +2,7 @@
 检查并领取朝夕心愿
 """
 
-from whimbox.task.task_template import TaskTemplate, register_step
+from whimbox.task.task_template import STATE_TYPE_ERROR, TaskTemplate, register_step
 from whimbox.ui.ui import ui_control
 from whimbox.ui.page_assets import *
 from whimbox.interaction.interaction_core import itt
@@ -174,7 +174,9 @@ class ZhaoxiTask(TaskTemplate):
                 data=self.todo_list)
             return "step5"
         else:
-            raise Exception("没办法凑齐分数了")
+            if self.current_score < 500:
+                self.update_task_result(status=STATE_TYPE_ERROR, message="没办法凑齐分数了", data=self.todo_list)
+                return "step5"
                 
 
     @register_step("领取奖励")

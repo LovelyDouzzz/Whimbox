@@ -11,8 +11,9 @@ from whimbox.common.logger import logger
 from whimbox.common.utils.utils import get_active_window_process_name
 from whimbox.common.cvars import PROCESS_NAME
 
-from whimbox.ingame_ui.components import CollapsedChatWidget, SettingsDialog, ChatView
+from whimbox.ingame_ui.components import CollapsedChatWidget, SettingsDialog, ChatView, PathSelectionDialog
 from whimbox.mcp_agent import mcp_agent
+from whimbox.ingame_ui.workers.call_worker import TaskCallWorker
 
 update_time = 500  # ui更新间隔，ms
 
@@ -22,16 +23,16 @@ class IngameUI(QWidget):
         
         # 状态管理
         self.is_expanded = False
-        self.current_view = "chat"  # "chat" 或 "function"
         
         # UI组件
         self.collapsed_widget = None
         self.expanded_widget = None
         self.chat_view = None  # ChatView组件
-        self.function_view_widget = None
-        self.chat_tab = None
-        self.function_tab = None
+        self.dragon_button = None
+        self.autopath_button = None
         self.settings_dialog = None
+        self.path_dialog = None
+        self.task_worker = None  # 任务worker
         
         # 初始化UI
         self.init_ui()
@@ -154,24 +155,55 @@ class IngameUI(QWidget):
         title_layout.addWidget(minimize_button)
         title_layout.addWidget(close_button)
         
-        # Tab导航栏
-        tab_layout = QHBoxLayout()
-        tab_layout.setSpacing(4)
-        tab_layout.setContentsMargins(0, 4, 0, 4)
+        # 功能按钮栏
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(8)
+        button_layout.setContentsMargins(0, 4, 0, 4)
         
-        self.chat_tab = QPushButton("💬 聊天")
-        self.chat_tab.setFixedHeight(35)
-        self.chat_tab.clicked.connect(lambda: self.switch_to_tab("chat"))
+        self.dragon_button = QPushButton("🐉 一条龙")
+        self.dragon_button.setFixedHeight(40)
+        self.dragon_button.clicked.connect(self.on_dragon_clicked)
+        self.dragon_button.setStyleSheet("""
+            QPushButton {
+                background-color: #FF9800;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+                padding: 8px 16px;
+            }
+            QPushButton:hover {
+                background-color: #F57C00;
+            }
+            QPushButton:pressed {
+                background-color: #E65100;
+            }
+        """)
         
-        self.function_tab = QPushButton("⚡ 功能")
-        self.function_tab.setFixedHeight(35)
-        self.function_tab.clicked.connect(lambda: self.switch_to_tab("function"))
+        self.autopath_button = QPushButton("🗺️ 自动跑图")
+        self.autopath_button.setFixedHeight(40)
+        self.autopath_button.clicked.connect(self.on_autopath_clicked)
+        self.autopath_button.setStyleSheet("""
+            QPushButton {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+                padding: 8px 16px;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+            QPushButton:pressed {
+                background-color: #3d8b40;
+            }
+        """)
         
-        # Tab样式
-        self.update_tab_styles()
-        
-        tab_layout.addWidget(self.chat_tab)
-        tab_layout.addWidget(self.function_tab)
+        button_layout.addWidget(self.dragon_button)
+        button_layout.addWidget(self.autopath_button)
         
         # 创建聊天视图组件
         self.chat_view = ChatView(self.expanded_widget)
@@ -179,61 +211,102 @@ class IngameUI(QWidget):
         self.chat_view.request_focus.connect(self.acquire_focus)
         self.chat_view.release_focus.connect(self.give_back_focus)
         
-        # 创建功能视图
-        self.function_view_widget = self.create_function_view()
-        
         # 组装布局
         layout.addLayout(title_layout)
-        layout.addLayout(tab_layout)
+        layout.addLayout(button_layout)
         layout.addWidget(self.chat_view, 1)
-        layout.addWidget(self.function_view_widget, 1)
-        
-        # 默认显示聊天视图
-        self.function_view_widget.hide()
     
-    def create_function_view(self):
-        """创建功能视图"""
-        function_view = QWidget()
-        function_view.setStyleSheet("""
-            QWidget {
-                background-color: transparent;
-                border: none;
-            }
-        """)
+    def on_dragon_clicked(self):
+        """点击一条龙按钮"""
+        logger.info("Dragon button clicked")
         
-        function_layout = QVBoxLayout(function_view)
-        function_layout.setContentsMargins(0, 0, 0, 0)
-        function_layout.setSpacing(0)
+        # 检查是否已有任务在运行
+        if self.task_worker and self.task_worker.isRunning():
+            QMessageBox.warning(self, "提示", "已有任务正在运行中，请稍候...")
+            return
         
-        # 功能内容区域
-        content_widget = QWidget()
-        content_widget.setStyleSheet("""
-            QWidget {
-                border: 1px solid #E0E0E0;
-                border-radius: 8px;
-                background-color: rgba(240, 240, 240, 150);
-            }
-        """)
+        # 将焦点返回给游戏
+        self.give_back_focus()
+
+        # 禁用按钮
+        self.dragon_button.setEnabled(False)
+        self.dragon_button.setText("⏳ 执行中...")
         
-        content_layout = QVBoxLayout(content_widget)
-        content_layout.setAlignment(Qt.AlignCenter)
+        # 在聊天视图中显示消息
+        if self.chat_view:
+            self.chat_view.add_message("开始一条龙，按“引号”键，随时终止任务\n", 'ai')
         
-        # 添加一个占位标签
-        placeholder_label = QLabel("⚡ 功能面板\n\n敬请期待...")
-        placeholder_label.setAlignment(Qt.AlignCenter)
-        placeholder_label.setStyleSheet("""
-            QLabel {
-                background-color: transparent;
-                color: #757575;
-                font-size: 18px;
-                border: none;
-            }
-        """)
+        # 创建并启动worker
+        self.task_worker = TaskCallWorker("all_in_one_task", {})
+        self.task_worker.progress.connect(self.on_task_progress)
+        self.task_worker.finished.connect(self.on_task_finished)
+        self.task_worker.start()
         
-        content_layout.addWidget(placeholder_label)
-        function_layout.addWidget(content_widget)
+        logger.info("Dragon task started")
+    
+    def on_autopath_clicked(self):
+        """点击自动跑图按钮"""
+        logger.info("Autopath button clicked")
+        self.path_dialog = PathSelectionDialog(self)
+        self.path_dialog.path_selected.connect(self.on_path_selected)
+        self.path_dialog.show_centered()
+        self.path_dialog.exec_()
+    
+    def on_path_selected(self, path_name):
+        """处理选中的路径"""
+        logger.info(f"Path selected: {path_name}")
         
-        return function_view
+        # 检查是否已有任务在运行
+        if self.task_worker and self.task_worker.isRunning():
+            QMessageBox.warning(self, "提示", "已有任务正在运行中，请稍候...")
+            return
+        
+        # 将焦点返回给游戏
+        self.give_back_focus()
+        
+        # 禁用按钮
+        self.autopath_button.setEnabled(False)
+        self.autopath_button.setText("⏳ 跑图中...")
+        
+        # 在聊天视图中显示消息
+        if self.chat_view:
+            self.chat_view.add_message(f"开始自动跑图：{path_name}，按“引号”键，随时终止任务\n", 'ai')
+    
+        params = {
+            "path_name": path_name
+        }
+        self.task_worker = TaskCallWorker("load_path", params)
+        self.task_worker.progress.connect(self.on_task_progress)
+        self.task_worker.finished.connect(self.on_task_finished)
+        self.task_worker.start()
+        
+        logger.info(f"Auto path task started: {path_name}")
+    
+    def on_task_progress(self, message: str):
+        """处理任务进度消息"""
+        logger.info(f"Task progress: {message}")
+        if self.chat_view:
+            self.chat_view.add_message(message, 'ai')
+    
+    def on_task_finished(self, success: bool, result):
+        """处理任务完成"""
+        # 恢复按钮状态
+        self.dragon_button.setEnabled(True)
+        self.dragon_button.setText("🐉 一条龙")
+        self.autopath_button.setEnabled(True)
+        self.autopath_button.setText("🗺️ 自动跑图")
+        
+        if success:
+            if self.chat_view:
+                self.chat_view.add_message(f"✅ 任务完成: {result['message']}", 'ai')
+        else:
+            if self.chat_view:
+                self.chat_view.add_message(f"❌ 任务失败：{result['message']}", 'error')
+        
+        # 清理worker
+        if self.task_worker:
+            self.task_worker.deleteLater()
+            self.task_worker = None
     
     
     def show_collapsed(self):
@@ -294,61 +367,6 @@ class IngameUI(QWidget):
         if reply == QMessageBox.Yes:
             logger.info("User confirmed - closing whimbox")
             sys.exit(0)
-    
-    def switch_to_tab(self, tab_name: str):
-        """切换到指定的tab"""
-        if tab_name == "chat":
-            self.chat_view.show()
-            self.function_view_widget.hide()
-            self.current_view = "chat"
-            logger.info("Switched to chat tab")
-        else:  # function
-            self.chat_view.hide()
-            self.function_view_widget.show()
-            self.current_view = "function"
-            logger.info("Switched to function tab")
-        
-        # 更新tab样式
-        self.update_tab_styles()
-    
-    def update_tab_styles(self):
-        """更新tab按钮的样式"""
-        active_style = """
-            QPushButton {
-                background-color: rgba(33, 150, 243, 200);
-                color: white;
-                border: none;
-                border-bottom: 3px solid #1976D2;
-                font-size: 14px;
-                font-weight: bold;
-                padding: 8px 16px;
-            }
-            QPushButton:hover {
-                background-color: rgba(33, 150, 243, 230);
-            }
-        """
-        
-        inactive_style = """
-            QPushButton {
-                background-color: rgba(240, 240, 240, 150);
-                color: #616161;
-                border: none;
-                border-bottom: 2px solid #E0E0E0;
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-            QPushButton:hover {
-                background-color: rgba(224, 224, 224, 180);
-                color: #424242;
-            }
-        """
-        
-        if self.current_view == "chat":
-            self.chat_tab.setStyleSheet(active_style)
-            self.function_tab.setStyleSheet(inactive_style)
-        else:
-            self.chat_tab.setStyleSheet(inactive_style)
-            self.function_tab.setStyleSheet(active_style)
     
     def open_settings(self):
         """打开设置对话框"""
@@ -435,7 +453,8 @@ class IngameUI(QWidget):
                 self.last_bbox = win_bbox
     
     def update_message(self, message: str):
-        if self.current_view == "chat":
+        """更新聊天消息"""
+        if self.chat_view:
             self.chat_view.ui_update_signal.emit("update_ai_message", message)
 
 

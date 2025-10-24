@@ -139,7 +139,7 @@ class Agent:
                 # 工具调用开始
                 tool_name = event.get("name", "")
                 if stream_callback:
-                    stream_callback(f"🔧 任务进行中，可以按“引号”键，随时终止任务\n")
+                    stream_callback(f"🔧 任务进行中，按“引号”键，随时终止任务\n")
                 if status_callback:
                     status_callback("on_tool_start", tool_name)
             

@@ -1,6 +1,6 @@
 '''朝夕心愿一条龙'''
 
-from whimbox.task.task_template import TaskTemplate, register_step
+from whimbox.task.task_template import STATE_TYPE_SUCCESS, TaskTemplate, register_step
 from whimbox.task import daily_task
 from whimbox.task.navigation_task.auto_path_task import AutoPathTask
 from whimbox.task.photo_task.daily_photo_task import DailyPhotoTask
@@ -30,10 +30,14 @@ class AllInOneTask(TaskTemplate):
         zhaoxi_task = daily_task.ZhaoxiTask()
         task_result = zhaoxi_task.task_run()
         self.zhaoxi_todo_list = task_result.data
-        if len(self.zhaoxi_todo_list) == 0:
-            self.task_result_list['zhaoxi_task'] = True
+        if task_result.status == STATE_TYPE_SUCCESS:
+            if len(self.zhaoxi_todo_list) == 0:
+                self.task_result_list['zhaoxi_task'] = True
+                return "step4"
+            self.log_to_gui(task_result.message)
+        else:
+            self.log_to_gui(task_result.message, is_error=True)
             return "step4"
-        self.log_to_gui(task_result.message)
 
     @register_step("开始完成朝夕心愿任务")
     def step3(self):

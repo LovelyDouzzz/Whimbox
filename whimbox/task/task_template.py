@@ -7,6 +7,7 @@ from whimbox.common.utils.ui_utils import back_to_page_main
 
 from pynput import keyboard
 import time
+import traceback
 
 STATE_TYPE_SUCCESS = "success"
 STATE_TYPE_ERROR = "error"
@@ -174,9 +175,7 @@ class TaskTemplate:
             self.current_step = self.error_step
             self.log_to_gui(self.error_step.state.msg, is_error=True)
             self.task_result = TaskResult(STATE_TYPE_ERROR, self.error_step.state.msg)
-            if DEBUG_MODE:
-                import traceback
-                logger.error(traceback.format_exc())
+            logger.error(traceback.format_exc())
         
         finally:
             self.handle_finally()
@@ -201,10 +200,10 @@ class TaskTemplate:
         pass
 
 
-    def task_stop(self, msg=None):
+    def task_stop(self, message=None, data=None):
         '''如果子类有自己额外的停止代码，就实现这个方法，并调用父类的这个方法'''
         global_stop_flag.set()
-        self.update_task_result(status=STATE_TYPE_STOP, message=msg or "停止任务")
+        self.update_task_result(status=STATE_TYPE_STOP, message=message or "停止任务", data=data)
 
     def need_stop(self):
         # 综合判断是否需要停止
