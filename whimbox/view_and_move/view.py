@@ -3,7 +3,7 @@ from whimbox.map.map import nikki_map
 from whimbox.common.timer_module import TimeoutTimer
 from whimbox.view_and_move.utils import *
 from whimbox.interaction.interaction_core import itt
-
+from whimbox.common.cvars import global_stop_flag
 import time
 
 def direct_cview(angel):
@@ -49,7 +49,7 @@ def calibrate_view_rotation_ratio(offset=5):
     """校准视角旋转比例"""
     if config["view_rotation_ratio"] != 1:
         return
-    while True:
+    while not global_stop_flag.is_set():
         cangle = get_safe_rotation(offset=offset)
         direct_cview(90)
         time.sleep(0.2)
@@ -57,6 +57,8 @@ def calibrate_view_rotation_ratio(offset=5):
         dangle = calculate_delta_angle(cangle, tangle)
         if abs(90-dangle) < offset:
             break 
+        if dangle == 0:
+            continue
         config["view_rotation_ratio"] = 90 / dangle * config["view_rotation_ratio"]
 
 
