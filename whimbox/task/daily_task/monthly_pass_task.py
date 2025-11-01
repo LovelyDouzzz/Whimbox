@@ -16,7 +16,9 @@ class MonthlyPassTask(TaskTemplate):
     @register_step("领取奖励")
     def step2(self):
         if wait_until_appear_then_click(ButtonMonthlyPassTab2):
-            wait_until_appear_then_click(ButtonMonthlyPassAward)
+            if wait_until_appear_then_click(ButtonMonthlyPassAward):
+                if wait_until_appear(TextClickSkip, retry_time=2):
+                    itt.key_press('f')
             time.sleep(0.5)
             if wait_until_appear_then_click(ButtonMonthlyPassTab1):
                 if wait_until_appear_then_click(ButtonMonthlyPassAward):
