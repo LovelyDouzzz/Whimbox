@@ -231,7 +231,9 @@ class ChatView(QWidget):
     
     def send_message(self):
         """发送消息并处理"""
-        if not HANDLE_OBJ.check_shape():
+        shape_ok, width, height = HANDLE_OBJ.check_shape()
+        logger.info(f"窗口分辨率: {width}x{height}")
+        if not shape_ok:
             self.add_message("请先将显示模式设置为窗口模式，窗口分辨率设置为1920x1080", 'error')
             return
 

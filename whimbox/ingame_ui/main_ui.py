@@ -236,7 +236,9 @@ class IngameUI(QWidget):
     
     def on_function_clicked(self, config: dict):
         """统一处理功能按钮点击"""
-        if not HANDLE_OBJ.check_shape():
+        shape_ok, width, height = HANDLE_OBJ.check_shape()
+        logger.info(f"窗口分辨率: {width}x{height}")
+        if not shape_ok:
             self.chat_view.add_message("请先将显示模式设置为窗口模式，窗口分辨率设置为1920x1080", 'error')
             self.switch_to_chat_view()
             return

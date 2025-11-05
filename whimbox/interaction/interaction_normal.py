@@ -107,17 +107,18 @@ class InteractionNormal(InteractionTemplate):
         if relative:
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, x, y)
         else:
-            wx, wy, w, h = win32gui.GetWindowRect(HANDLE_OBJ.get_handle())
-            if isBorderlessWindow:
-                x += wx
-                y += wy
-            else:
-                x = x + wx + 11
-                y = y + wy + 44
-            abs_x = int(x * 65536 / win32api.GetSystemMetrics(win32con.SM_CXSCREEN))
-            abs_y = int(y * 65536 / win32api.GetSystemMetrics(win32con.SM_CYSCREEN))
-            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE|win32con.MOUSEEVENTF_ABSOLUTE, abs_x, abs_y)
-            # win32api.SetCursorPos((x, y))
+            # wx, wy, w, h = win32gui.GetWindowRect(HANDLE_OBJ.get_handle())
+            # if isBorderlessWindow:
+            #     x += wx
+            #     y += wy
+            # else:
+            #     x = x + wx + 11
+            #     y = y + wy + 44
+            # abs_x = int(x * 65536 / win32api.GetSystemMetrics(win32con.SM_CXSCREEN))
+            # abs_y = int(y * 65536 / win32api.GetSystemMetrics(win32con.SM_CYSCREEN))
+            # win32api.mouse_event(win32con.MOUSEEVENTF_MOVE|win32con.MOUSEEVENTF_ABSOLUTE, abs_x, abs_y)
+            screen_x, screen_y = win32gui.ClientToScreen(HANDLE_OBJ.get_handle(), (x, y))
+            win32api.SetCursorPos((screen_x, screen_y))
 
 KEY_DOWN = 'KeyDown'
 KEY_UP = 'KeyUp'

@@ -431,7 +431,7 @@ class InteractionBGD:
 
 
     @before_operation()
-    def move_and_click(self, position, type='left', delay = 0.2):
+    def move_and_click(self, position, type='left', delay = 0.3):
         """移动鼠标到坐标并点击
 
         Args:
