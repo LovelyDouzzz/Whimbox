@@ -141,18 +141,18 @@ class InteractionBGD:
         return res
 
 
-    def get_img_position(self, imgicon: img_manager.ImgIcon) -> list:
-        upper_func_name = inspect.getframeinfo(inspect.currentframe().f_back)[2]
-        cap = self.capture(posi=imgicon.cap_posi)
-        matching_rate, max_loc = similar_img(cap, imgicon.image, ret_mode=IMG_POSI)
-        bbox = Bbox(imgicon.cap_posi[0], imgicon.cap_posi[1], imgicon.cap_posi[0]+max_loc[0], imgicon.cap_posi[1]+max_loc[1])
-        if imgicon.is_print_log(matching_rate >= imgicon.threshold):
-            logger.trace('imgname: ' + imgicon.name + 'max_loc: ' + str(max_loc) + ' |function name: ' + upper_func_name)
+    # def get_img_position(self, imgicon: img_manager.ImgIcon) -> list:
+    #     upper_func_name = inspect.getframeinfo(inspect.currentframe().f_back)[2]
+    #     cap = self.capture(posi=imgicon.cap_posi)
+    #     matching_rate, max_loc = similar_img(cap, imgicon.image, ret_mode=IMG_POSI)
+    #     bbox = Bbox(imgicon.cap_posi[0], imgicon.cap_posi[1], imgicon.cap_posi[0]+max_loc[0], imgicon.cap_posi[1]+max_loc[1])
+    #     if imgicon.is_print_log(matching_rate >= imgicon.threshold):
+    #         logger.trace('imgname: ' + imgicon.name + 'max_loc: ' + str(max_loc) + ' |function name: ' + upper_func_name)
 
-        if matching_rate >= imgicon.threshold:
-            return bbox
-        else:
-            return None
+    #     if matching_rate >= imgicon.threshold:
+    #         return bbox
+    #     else:
+    #         return None
 
 
     def get_img_existence(self, imgicon: img_manager.ImgIcon, is_gray=False, ret_mode = IMG_BOOL, show_res = False, cap = None):
