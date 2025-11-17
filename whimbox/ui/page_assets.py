@@ -17,6 +17,7 @@ page_huanjing_bless = TitlePage("祝福闪光幻境")
 page_huanjing_monster = TitlePage("魔物试炼幻境")
 page_photo = TitlePage("大喵相机")
 page_monthly_pass = TitlePage("奇迹之旅")
+page_event = TitlePage("活动大厅")
 
 ui_pages = [
     page_main,
@@ -33,6 +34,7 @@ ui_pages = [
     page_huanjing_monster,
     page_photo,
     page_monthly_pass,
+    page_event,
 ]
 
 page_main.link('m', page_bigmap)
@@ -41,6 +43,7 @@ page_main.link('l', page_daily_task)
 page_main.link('c', page_dress)
 page_main.link('p', page_photo)
 page_main.link('j', page_monthly_pass)
+page_main.link('k', page_event)
 
 page_bigmap.link('m', page_main)
 
@@ -72,3 +75,5 @@ page_ability.link("esc", page_main)
 page_photo.link("esc", page_main)
 
 page_monthly_pass.link("esc", page_main)
+
+page_event.link('esc', page_main)

@@ -3,6 +3,7 @@ from whimbox.task.navigation_task.common import path_manager
 from whimbox.task.navigation_task.auto_path_task import AutoPathTask
 from whimbox.task.navigation_task.record_path_task import RecordPathTask
 from whimbox.task.photo_task.daily_photo_task import DailyPhotoTask
+from whimbox.task.event_task.roll_dice_task import RollDiceTask
 from whimbox.task.task_template import STATE_TYPE_SUCCESS, STATE_TYPE_ERROR
 from whimbox.common.path_lib import SCRIPT_PATH
 from whimbox.config.config import global_config
@@ -206,6 +207,16 @@ async def monthly_pass_task() -> dict:
     """
     monthly_pass_task = daily_task.MonthlyPassTask()
     task_result = monthly_pass_task.task_run()
+    return task_result.to_dict()
+
+
+@mcp.tool()
+async def roll_dice_task() -> dict:
+    """
+    扔骰子
+    """
+    roll_dice_task = RollDiceTask()
+    task_result = roll_dice_task.task_run()
     return task_result.to_dict()
 
 def start_mcp_server():
