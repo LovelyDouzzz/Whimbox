@@ -13,7 +13,7 @@ AreaUITime = Area()
 AreaEscEntrances = Area()
 
 # loading界面
-IconUILoading = ImgIcon(print_log=LOG_WHEN_TRUE)
+IconUILoading = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.99)
 
 # 大地图相关
 IconUIBigmap = ImgIcon(print_log=LOG_WHEN_TRUE)
