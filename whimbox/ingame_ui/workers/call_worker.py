@@ -4,6 +4,7 @@ import asyncio
 from whimbox.config.config import global_config
 from whimbox.common.logger import logger
 from fastmcp.client.transports import StreamableHttpTransport
+from whimbox.common.cvars import MCP_TOOL_TIMEOUT
 
 
 class TaskCallWorker(QThread):
@@ -45,12 +46,11 @@ class TaskCallWorker(QThread):
         try:
             transport = StreamableHttpTransport(url=self.mcp_url)
             client = Client(transport)
-            # mcp_timeout = global_config.get_int("General", "mcp_timeout")
             async with client:
                 result = await client.call_tool(
                     self.tool_name, 
                     self.params,
-                    timeout=24*60*60,  # mcp工具调用超时时间设为24小时
+                    timeout=MCP_TOOL_TIMEOUT,
                 )
                 return result
         except Exception as e:

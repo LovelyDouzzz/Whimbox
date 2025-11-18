@@ -12,6 +12,8 @@ CV_DEBUG_MODE = global_config.get_bool('General', 'cv_debug') and IS_DEV_MODE
 # 比如页面切换、地图移动等等，（task相关已经在TaskTemplate中统一检查）
 global_stop_flag = threading.Event()
 
+MCP_TOOL_TIMEOUT = 24*60*60  # mcp工具调用超时时间设为24小时
+
 # Angle modes
 ANGLE_NORMAL = 0
 ANGLE_NEGATIVE_Y = 1
