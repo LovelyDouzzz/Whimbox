@@ -1,15 +1,14 @@
 from typing import Dict, Any
 import win32gui
+import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import asyncio
 
 from whimbox.common.handle_lib import HANDLE_OBJ
 from whimbox.common.logger import logger
 from whimbox.config.default_config import DEFAULT_CONFIG
 from whimbox.config.config import global_config
-from whimbox.mcp_agent import mcp_agent
 
 
 class SaveConfigWorker(QThread):
@@ -23,22 +22,11 @@ class SaveConfigWorker(QThread):
     def run(self):
         """在后台线程中执行保存操作"""
         try:
-            agent_modified = False
             # 更新配置值
             for widget_key, value in self.config_data.items():
                 section, key = widget_key.split('.')
-                # 如果修改了Agent的配置，需要重启mcp_agent
-                if section == "Agent":
-                    org_value = global_config.get(section, key)
-                    if org_value != value:
-                        agent_modified = True
                 global_config.set(section, key, value)
-            
-            # 如果修改了Agent配置，重启mcp_agent
-            if agent_modified:
-                logger.info("agent配置修改，重启mcp_agent")
-                asyncio.run(mcp_agent.start())
-            
+
             # 保存配置到文件
             if global_config.save():
                 logger.info("配置保存成功")
@@ -216,6 +204,8 @@ class SettingsDialog(QDialog):
             cn_name = "大模型"
         elif section_name == "Game":
             cn_name = "游戏"
+        elif section_name == "Keybinds":
+            cn_name = "改键（如果修改了游戏里的键位设置，请在这里同步修改）"
         else:
             cn_name = section_name
         group_box = QGroupBox(cn_name)
@@ -398,8 +388,15 @@ class SettingsDialog(QDialog):
         """保存完成的回调"""
         self.restore_buttons()
         
-        if success:
+        if success: 
             self.accept()
+            # 弹出重启对话框
+            QMessageBox.information(
+                self,
+                '配置已保存',
+                '需要重启奇想盒使配置生效。\n\n关闭后请再手动启动奇想盒',
+            )
+            sys.exit(0)
         else:
             QMessageBox.critical(self, "错误", error_msg)
     

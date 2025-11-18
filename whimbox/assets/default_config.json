@@ -68,5 +68,67 @@
             "value": 8,
             "description": "允许奇想盒使用第几个能力槽位"
         }
+    },
+    "Keybinds": {
+        "map":{
+            "value": "m",
+            "description": "地图"
+        },
+        "daily_task":{
+            "value": "l",
+            "description": "奇想日历"
+        },
+        "dress":{
+            "value": "c",
+            "description": "换装"
+        },
+        "take_photo":{
+            "value": "p",
+            "description": "拍照"
+        },
+        "monthly_pass":{
+            "value": "j",
+            "description": "奇迹之旅/乐园构想"
+        },
+        "event":{
+            "value": "k",
+            "description": "活动大厅"
+        },
+        "back":{
+            "value": "backspace",
+            "description": "退出关卡"
+        },
+        "ability_1":{
+            "value": "1",
+            "description": "能力切换1"
+        },
+        "ability_2":{
+            "value": "2",
+            "description": "能力切换2"
+        },
+        "ability_3":{
+            "value": "3",
+            "description": "能力切换3"
+        },
+        "ability_4":{
+            "value": "4",
+            "description": "能力切换4"
+        },
+        "ability_5":{
+            "value": "5",
+            "description": "能力切换5"
+        },
+        "ability_6":{
+            "value": "6",
+            "description": "能力切换6"
+        },
+        "ability_7":{
+            "value": "7",
+            "description": "能力切换7"
+        },
+        "ability_8":{
+            "value": "8",
+            "description": "能力切换8"
+        }
     }
 }

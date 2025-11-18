@@ -10,6 +10,7 @@ import time
 from whimbox.ui.material_icon_assets import material_icon_dict
 from whimbox.common.utils.ui_utils import *
 from whimbox.common.cvars import DEBUG_MODE
+from whimbox.common.keybind import keybind
 
 target_material_list = ["噗灵", "丝线", "闪亮泡泡"]
 
@@ -118,7 +119,7 @@ class JihuaTask(TaskTemplate):
     @register_step("退出激化幻境")
     def step9(self):
         if wait_until_appear(IconPageMainFeature):
-            itt.key_press('backspace')
+            itt.key_press(keybind.KEYBIND_BACK)
             return
         raise Exception("退不出激化幻境了？！")
 

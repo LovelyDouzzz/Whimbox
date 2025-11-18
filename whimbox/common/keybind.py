@@ -1,0 +1,39 @@
+from whimbox.config.config import global_config
+
+class Keybind:
+    def __init__(self):
+        self.KEYBIND_MAP = "m"
+        self.KEYBIND_DAILY_TASK = "l"
+        self.KEYBIND_DRESS = "c"
+        self.KEYBIND_TAKE_PHOTO = "p"
+        self.KEYBIND_MONTHLY_PASS = "j"
+        self.KEYBIND_EVENT = "k"
+        self.KEYBIND_BACK = "backspace"
+        self.KEYBIND_ABILITY_1 = "1"
+        self.KEYBIND_ABILITY_2 = "2"
+        self.KEYBIND_ABILITY_3 = "3"
+        self.KEYBIND_ABILITY_4 = "4"
+        self.KEYBIND_ABILITY_5 = "5"
+        self.KEYBIND_ABILITY_6 = "6"
+        self.KEYBIND_ABILITY_7 = "7"
+        self.KEYBIND_ABILITY_8 = "8"
+        self.update_keybind()
+
+    def update_keybind(self):
+        self.KEYBIND_MAP = global_config.get('Keybinds', 'map')
+        self.KEYBIND_DAILY_TASK = global_config.get('Keybinds', 'daily_task')
+        self.KEYBIND_DRESS = global_config.get('Keybinds', 'dress')
+        self.KEYBIND_TAKE_PHOTO = global_config.get('Keybinds', 'take_photo')
+        self.KEYBIND_MONTHLY_PASS = global_config.get('Keybinds', 'monthly_pass')
+        self.KEYBIND_EVENT = global_config.get('Keybinds', 'event')
+        self.KEYBIND_BACK = global_config.get('Keybinds', 'back')
+        self.KEYBIND_ABILITY_1 = global_config.get('Keybinds', 'ability_1')
+        self.KEYBIND_ABILITY_2 = global_config.get('Keybinds', 'ability_2')
+        self.KEYBIND_ABILITY_3 = global_config.get('Keybinds', 'ability_3')
+        self.KEYBIND_ABILITY_4 = global_config.get('Keybinds', 'ability_4')
+        self.KEYBIND_ABILITY_5 = global_config.get('Keybinds', 'ability_5')
+        self.KEYBIND_ABILITY_6 = global_config.get('Keybinds', 'ability_6')
+        self.KEYBIND_ABILITY_7 = global_config.get('Keybinds', 'ability_7')
+        self.KEYBIND_ABILITY_8 = global_config.get('Keybinds', 'ability_8')
+
+keybind = Keybind()

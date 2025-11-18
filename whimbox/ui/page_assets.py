@@ -1,5 +1,6 @@
 from whimbox.ui.page import UIPage, TitlePage
 from whimbox.ui.ui_assets import *
+from whimbox.common.keybind import keybind
 
 page_loading = UIPage(check_icon=IconUILoading)
 
@@ -37,15 +38,15 @@ ui_pages = [
     page_event,
 ]
 
-page_main.link('m', page_bigmap)
+page_main.link(keybind.KEYBIND_MAP, page_bigmap)
 page_main.link('esc', page_esc)
-page_main.link('l', page_daily_task)
-page_main.link('c', page_dress)
-page_main.link('p', page_photo)
-page_main.link('j', page_monthly_pass)
-page_main.link('k', page_event)
+page_main.link(keybind.KEYBIND_DAILY_TASK, page_daily_task)
+page_main.link(keybind.KEYBIND_DRESS, page_dress)
+page_main.link(keybind.KEYBIND_TAKE_PHOTO, page_photo)
+page_main.link(keybind.KEYBIND_MONTHLY_PASS, page_monthly_pass)
+page_main.link(keybind.KEYBIND_EVENT, page_event)
 
-page_bigmap.link('m', page_main)
+page_bigmap.link(keybind.KEYBIND_MAP, page_main)
 
 page_esc.link('esc', page_main)
 

@@ -173,6 +173,26 @@ class AbilityManager:
         ui_control.goto_page(page_main)
         return res
 
+    def get_ability_keybind(self, ability_index: str):
+        if ability_index == '1':
+            return keybind.KEYBIND_ABILITY_1
+        elif ability_index == '2':
+            return keybind.KEYBIND_ABILITY_2
+        elif ability_index == '3':
+            return keybind.KEYBIND_ABILITY_3
+        elif ability_index == '4':
+            return keybind.KEYBIND_ABILITY_4
+        elif ability_index == '5':
+            return keybind.KEYBIND_ABILITY_5
+        elif ability_index == '6':
+            return keybind.KEYBIND_ABILITY_6
+        elif ability_index == '7':
+            return keybind.KEYBIND_ABILITY_7
+        elif ability_index == '8':
+            return keybind.KEYBIND_ABILITY_8
+        else:
+            raise(f'ability_index can only 1~8, but got {ability_index}')
+
     def change_ability(self, ability_name: str):
         # 如果当前能力已经符合，就直接返回
         self.current_ability = self.get_current_ability()
@@ -195,6 +215,8 @@ class AbilityManager:
                 ability_key = str(global_config.get_int('Game', 'ability_key'))
                 if self._set_ability(ability_name, ability_key):
                     key = ability_key
+        
+        key = self.get_ability_keybind(key)
 
         ui_control.goto_page(page_main)
         if key:

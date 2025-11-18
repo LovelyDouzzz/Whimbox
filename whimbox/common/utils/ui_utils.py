@@ -9,6 +9,7 @@ from whimbox.common.utils.img_utils import *
 from whimbox.common.utils.posi_utils import *
 from whimbox.ui.ui_assets import *
 from whimbox.common.cvars import global_stop_flag
+from whimbox.common.keybind import keybind
 import time
 
 
@@ -189,7 +190,7 @@ def wait_until_appear(obj, retry_time=3):
 def back_to_page_main():
     while not global_stop_flag.is_set():
         if itt.get_img_existence(IconDungeonFeature):
-            itt.key_press('backspace')
+            itt.key_press(keybind.KEYBIND_BACK)
         elif itt.get_img_existence(IconPageMainFeature):
             break
         else:
