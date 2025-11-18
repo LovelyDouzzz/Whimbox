@@ -50,7 +50,7 @@ class RapidOcr():
 
         rec_texts = []
         if res and hasattr(res, 'txts') and res.txts:
-            rec_texts = [self._replace_texts(txt) for txt in res.txts if len(txt) > 1]
+            rec_texts = [self._replace_texts(txt) for txt in res.txts if len(txt) > 0]
 
         if per_monitor:
             logger.info(f"ocr performance: {round(time.time() - pt, 2)}")
