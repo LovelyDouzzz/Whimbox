@@ -73,12 +73,12 @@ class Agent:
                 await asyncio.sleep(0.5)
             if flag:
                 logger.debug("MCP server ready")
-                mcp_timeout = timedelta(seconds=global_config.get_int("General", "mcp_timeout"))  # 10分钟
+                # mcp_timeout = timedelta(seconds=global_config.get_int("General", "mcp_timeout"))  # 10分钟
                 client = MultiServerMCPClient({
                     "whimbox": {
                         "url": mcp_url,
                         "transport": "streamable_http",
-                        "sse_read_timeout": mcp_timeout,  # SSE流读取超时
+                        "sse_read_timeout": 24*60*60,  # mcp工具调用超时时间设为24小时
                     }
                 })
                 self.tools = await client.get_tools()

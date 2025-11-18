@@ -45,14 +45,13 @@ class TaskCallWorker(QThread):
         try:
             transport = StreamableHttpTransport(url=self.mcp_url)
             client = Client(transport)
-            mcp_timeout = global_config.get_int("General", "mcp_timeout")
+            # mcp_timeout = global_config.get_int("General", "mcp_timeout")
             async with client:
                 result = await client.call_tool(
                     self.tool_name, 
-                    self.params, 
-                    timeout=mcp_timeout,
+                    self.params,
+                    timeout=24*60*60,  # mcp工具调用超时时间设为24小时
                 )
                 return result
         except Exception as e:
-            logger.error(f"MCP调用失败: {e}")
-            raise e
+            logger.error(f"MCP调用异常: {e}")
