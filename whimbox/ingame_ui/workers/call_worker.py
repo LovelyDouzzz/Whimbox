@@ -38,7 +38,7 @@ class TaskCallWorker(QThread):
                 
         except Exception as e:
             logger.error(f"Task failed: {e}")
-            self.finished.emit(False, str(e))
+            self.finished.emit(False, {"message":str(e)})
 
     async def _call_tool(self):
         """异步调用工具"""

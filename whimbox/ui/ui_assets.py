@@ -6,11 +6,13 @@ from whimbox.ui.template.text_manager import TextTemplate, Text
 # 很多界面左上角都有的文字标题区域
 AreaPageTitleFeature = Area()
 
-# 主界面、esc菜单相关
+# 主界面、esc菜单、抽卡、商城相关
 IconPageMainFeature = ImgIcon(print_log=LOG_NONE, threshold=0.99)
 IconDungeonFeature = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.99)
 AreaUITime = Area()
 AreaEscEntrances = Area()
+IconGachaFeature = ImgIcon(print_log=LOG_NONE, threshold=0.99)
+IconShopFeature = ImgIcon(print_log=LOG_NONE, threshold=0.99)
 
 # loading界面
 IconUILoading = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.99)

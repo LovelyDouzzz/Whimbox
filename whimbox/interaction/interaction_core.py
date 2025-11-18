@@ -15,6 +15,7 @@ from whimbox.common.logger import logger, get_logger_format_date
 from whimbox.common.utils.utils import get_active_window_process_name
 from whimbox.common.utils.img_utils import crop, process_with_hsv_limit, similar_img, add_padding
 from whimbox.config.config import global_config
+from whimbox.ui.ui_assets import IconShopFeature, IconGachaFeature
 
 ocr_type = global_config.get('General', 'ocr')
 if ocr_type == 'rapid':
@@ -25,11 +26,14 @@ else:
 def before_operation(print_log=False):
     def outwrapper(func):
         def wrapper(*args, **kwargs):
-            func_name = inspect.getframeinfo(inspect.currentframe().f_back)[2]
-            func_name_2 = inspect.getframeinfo(inspect.currentframe().f_back.f_back)[2]
             if print_log:
+                func_name = inspect.getframeinfo(inspect.currentframe().f_back)[2]
+                func_name_2 = inspect.getframeinfo(inspect.currentframe().f_back.f_back)[2]
                 logger.trace(f" operation: {func.__name__} | args: {args[1:]} | {kwargs} | function name: {func_name} & {func_name_2}")
-                    
+            
+            if not itt._can_interact():
+                raise Exception("中断操作：误入商城和抽卡界面")
+
             winname = get_active_window_process_name()
             if winname != PROCESS_NAME:
                 while 1:
@@ -312,6 +316,11 @@ class InteractionBGD:
                 logger.debug('delay: ' + str(x) + ' |function name: ' + upper_func_name + ' |comment: ' + comment)
             time.sleep(x)
 
+    def _can_interact(self):
+        # 判断是否在商城和抽卡界面，在的话禁止操作
+        if self.get_img_existence(IconShopFeature) or self.get_img_existence(IconGachaFeature):
+            return False
+        return True
 
     @before_operation()
     def left_click(self):
