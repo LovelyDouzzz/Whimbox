@@ -200,7 +200,7 @@ def back_to_page_main():
 def skip_to_page_main():
     '''第一次获取到某个东西，会弹个窗口，按f跳过'''
     if not itt.get_img_existence(IconPageMainFeature):
-        itt.key_press('f')
+        itt.key_press(keybind.KEYBIND_INTERACTION)
             
 if __name__ == "__main__":
     back_to_page_main()

@@ -419,7 +419,10 @@ class InteractionBGD:
             key (str): 按键代号。查阅vkCode.py
         """
         self.operation_lock.acquire()
-        self.itt_exec.key_press(key)
+        if key == "鼠标右键":
+            self.itt_exec.right_click()
+        else:
+            self.itt_exec.key_press(key)
         self.operation_lock.release()
 
     @before_operation(print_log=False)

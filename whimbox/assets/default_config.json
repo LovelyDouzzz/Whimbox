@@ -94,9 +94,33 @@
             "value": "k",
             "description": "活动大厅"
         },
+        "interaction":{
+            "value": "f",
+            "description": "交互"
+        },
+        "bell":{
+            "value": "e",
+            "description": "摇铃"
+        },
+        "forward":{
+            "value": "w",
+            "description": "前进"
+        },
+        "jump":{
+            "value": "space",
+            "description": "跳跃"
+        },
+        "falling":{
+            "value": "q",
+            "description": "急坠"
+        },
         "back":{
             "value": "backspace",
             "description": "退出关卡"
+        },
+        "fishing_reel_in":{
+            "value": "鼠标右键",
+            "description": "钓鱼收线"
         },
         "ability_1":{
             "value": "1",

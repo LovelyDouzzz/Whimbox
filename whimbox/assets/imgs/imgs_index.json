@@ -305,11 +305,11 @@
   "IconFishingPullLineAlt": {
     "rel_path": "imgs\\Windows\\Fishing\\IconFishingPullLineAlt.jpg"
   },
-  "IconFishingReelIn": {
-    "rel_path": "imgs\\Windows\\Fishing\\IconFishingReelIn.jpg"
+  "IconFishingFinish": {
+    "rel_path": "imgs\\Windows\\Fishing\\IconFishingFinish.jpg"
   },
-  "IconFishingReelLine": {
-    "rel_path": "imgs\\Windows\\Fishing\\IconFishingReelLine.jpg"
+  "IconFishingReelIn": {
+    "rel_path": "imgs\\Windows\\Fishing\\IconFishingReelIn.png"
   },
   "IconFishingSkip": {
     "rel_path": "imgs\\Windows\\Fishing\\IconFishingSkip.jpg"

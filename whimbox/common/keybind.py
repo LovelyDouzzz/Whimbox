@@ -8,6 +8,12 @@ class Keybind:
         self.KEYBIND_TAKE_PHOTO = "p"
         self.KEYBIND_MONTHLY_PASS = "j"
         self.KEYBIND_EVENT = "k"
+        self.KEYBIND_INTERACTION = "f"
+        self.KEYBIND_BELL = "e"
+        self.KEYBIND_FORWARD = "w"
+        self.KEYBIND_JUMP = "space"
+        self.KEYBIND_FALLING = "q"
+        self.KEYBIND_FISHING_REEL_IN = "鼠标右键"
         self.KEYBIND_BACK = "backspace"
         self.KEYBIND_ABILITY_1 = "1"
         self.KEYBIND_ABILITY_2 = "2"
@@ -26,6 +32,12 @@ class Keybind:
         self.KEYBIND_TAKE_PHOTO = global_config.get('Keybinds', 'take_photo')
         self.KEYBIND_MONTHLY_PASS = global_config.get('Keybinds', 'monthly_pass')
         self.KEYBIND_EVENT = global_config.get('Keybinds', 'event')
+        self.KEYBIND_INTERACTION = global_config.get('Keybinds', 'interaction')
+        self.KEYBIND_BELL = global_config.get('Keybinds', 'bell')
+        self.KEYBIND_FORWARD = global_config.get('Keybinds', 'forward')
+        self.KEYBIND_JUMP = global_config.get('Keybinds', 'jump')
+        self.KEYBIND_FALLING = global_config.get('Keybinds', 'falling')
+        self.KEYBIND_FISHING_REEL_IN = global_config.get('Keybinds', 'fishing_reel_in')
         self.KEYBIND_BACK = global_config.get('Keybinds', 'back')
         self.KEYBIND_ABILITY_1 = global_config.get('Keybinds', 'ability_1')
         self.KEYBIND_ABILITY_2 = global_config.get('Keybinds', 'ability_2')

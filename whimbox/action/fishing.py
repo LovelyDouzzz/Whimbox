@@ -15,6 +15,7 @@ from whimbox.common.utils.posi_utils import union_bbox
 from whimbox.ability.ability import ability_manager
 from whimbox.ability.cvar import ABILITY_NAME_FISH
 from whimbox.common.logger import logger
+from whimbox.common.keybind import keybind
 
 hsv_limit = ([20, 50, 245], [30, 90, 255])
 
@@ -25,19 +26,19 @@ class FishingResult(Enum):
 
 class FishingState(Enum):
     NOT_FISHING = 0
-    REEL_IN = 1       # 收竿 (右键取消)
+    FINISH = 1      # 收竿 (右键取消)
     STRIKE = 2      # 提竿 (S)
-    PULL_LINE = 3     # 拉扯鱼线 (A/D)
-    REEL_LINE = 4     # 收线 (右键狂点)
-    SKIP = 5          # 跳过 (F)
+    PULL_LINE = 3   # 拉扯鱼线 (A/D)
+    REEL_IN = 4     # 收线 (右键狂点)
+    SKIP = 5        # 跳过 (F)
     UNKNOWN = 6
 
 FISHING_STATE_MAPPING = [
+    (IconFishingFinish, FishingState.FINISH),
     (IconFishingStrike, FishingState.STRIKE),
-    (IconFishingReelIn, FishingState.REEL_IN),
     (IconFishingPullLine, FishingState.PULL_LINE),
     (IconFishingPullLineAlt, FishingState.PULL_LINE),
-    (IconFishingReelLine, FishingState.REEL_LINE),
+    (IconFishingReelIn, FishingState.REEL_IN),
     (IconFishingSkip, FishingState.SKIP),
 ]
 
@@ -107,18 +108,21 @@ class FishingTask(TaskTemplate):
         self.log_to_gui("状态: 提竿")
         itt.key_press('s')
 
-    def handle_reel_line(self):
+    def handle_reel_in(self):
         self.log_to_gui("状态: 收线")
         while True:
-            itt.right_click()
-            if self.get_current_state() != FishingState.REEL_LINE:
+            if keybind.KEYBIND_FISHING_REEL_IN == "鼠标右键":
+                itt.right_click()
+            else:
+                itt.key_press(keybind.KEYBIND_FISHING_REEL_IN)
+            if self.get_current_state() != FishingState.REEL_IN:
                 break
             # time.sleep(0.1)
 
     def handle_skip(self):
         self.log_to_gui("状态: 跳过")
         while not ui_control.verify_page(page_main):
-            itt.key_press('f')
+            itt.key_press(keybind.KEYBIND_INTERACTION)
             time.sleep(0.2)
         self.record_material()
 
@@ -153,7 +157,7 @@ class FishingTask(TaskTemplate):
     def step2(self):
         fish_time = 0
         while fish_time < 3 and not self.need_stop():
-            res = self.fishiing_loop()
+            res = self.fishing_loop()
             if res == FishingResult.SUCCESS:
                 fish_time += 1
             elif res == FishingResult.NO_FISH:
@@ -173,15 +177,20 @@ class FishingTask(TaskTemplate):
             self.update_task_result(message=f"获得{res_str}", data=self.material_count_dict)
 
 
-    def fishiing_loop(self):
+    def fishing_loop(self):
         itt.right_click()
-        idle_timer = AdvanceTimer(15) # 15秒如果没有鱼，就说明钓鱼位置错了
+        # 等待进入钓鱼状态
+        while self.get_current_state() != FishingState.FINISH and not self.need_stop():
+            time.sleep(0.5)
+        # 开始钓鱼
+        logger.info("进入钓鱼状态")
+        idle_timer = AdvanceTimer(10) # 10秒如果没有鱼，就说明钓鱼位置错了
         idle_timer.start()
-        time.sleep(3)
+        itt.delay(2, comment="等待弹出鱼钓光的提示框")
         if itt.get_img_existence(IconFishingNoFish):
             itt.right_click()
             while not ui_control.verify_page(page_main):
-                time.sleep(0.2)
+                time.sleep(0.5)
             return FishingResult.NO_FISH
         
         while not self.need_stop():
@@ -192,7 +201,8 @@ class FishingTask(TaskTemplate):
                 return FishingResult.WRONG_POSITION
 
             state = self.get_current_state()
-            if state in [FishingState.NOT_FISHING, FishingState.UNKNOWN, FishingState.REEL_IN]:
+            logger.debug(f"当前状态: {state}")
+            if state in [FishingState.NOT_FISHING, FishingState.FINISH]:
                 time.sleep(0.5)
                 continue
             elif state == FishingState.STRIKE:
@@ -202,10 +212,13 @@ class FishingTask(TaskTemplate):
             elif state == FishingState.PULL_LINE:
                 self.handle_pull_line()
                 continue
-            elif state == FishingState.REEL_LINE:
-                self.handle_reel_line()
+            elif state == FishingState.REEL_IN:
+                self.handle_reel_in()
                 continue
             elif state == FishingState.SKIP:
+                self.handle_skip()
+                break
+            elif state == FishingState.UNKNOWN:
                 self.handle_skip()
                 break
 
@@ -215,4 +228,5 @@ class FishingTask(TaskTemplate):
 if __name__ == "__main__":
     # CV_DEBUG_MODE = True
     task = FishingTask()
-    task.task_run()
+    # task.task_run()
+    task.fishing_loop()

@@ -6,7 +6,7 @@ from whimbox.common.timer_module import AdvanceTimer
 from whimbox.common.logger import logger
 from whimbox.common.utils.img_utils import *
 from whimbox.common.utils.posi_utils import *
-
+from whimbox.common.keybind import keybind
 import time
 from enum import Enum
 
@@ -66,19 +66,19 @@ class JumpController(AdvanceThreading):
         self._jump_state = JumpState.NORMAL_JUMP
         self.normal_jump_timer.reset()
         self.normal_jump_timer.start()
-        itt.key_down('spacebar')
+        itt.key_down(keybind.KEYBIND_JUMP)
         logger.debug('start jump')
 
     def _prepare_double_jump(self):
         self._jump_state = JumpState.PREPARE_DOUBLE_JUMP
         self.prepare_double_jump_timer.reset()
         self.prepare_double_jump_timer.start()
-        itt.key_up('spacebar')
+        itt.key_up(keybind.KEYBIND_JUMP)
         logger.debug('prepare double jump')
 
     def _start_double_jump(self):
         self._jump_state = JumpState.DOUBLE_JUMP
-        itt.key_press('spacebar')
+        itt.key_press(keybind.KEYBIND_JUMP)
         self.double_jump_begin_time = time.time()
         logger.debug('start double jump')
 
@@ -86,7 +86,7 @@ class JumpController(AdvanceThreading):
         if self._jump_state == JumpState.IDLE or get_move_mode_in_game() == MOVE_MODE_WALK:
             return
         if self._jump_state == JumpState.NORMAL_JUMP:
-            itt.key_up('spacebar')
+            itt.key_up(keybind.KEYBIND_JUMP)
             self.normal_jump_timer.reset()
             self._jump_state = JumpState.IDLE
             logger.debug('stop jump')
@@ -94,7 +94,7 @@ class JumpController(AdvanceThreading):
             self._jump_state = JumpState.IDLE
             logger.debug("stop prepare double jump")
         elif self._jump_state == JumpState.DOUBLE_JUMP:
-            itt.key_press('spacebar')
+            itt.key_press(keybind.KEYBIND_JUMP)
             self.double_jump_begin_time = 0
             self._jump_state = JumpState.IDLE
             logger.debug('stop double jump')
@@ -162,7 +162,7 @@ class MoveController(AdvanceThreading):
             duration = 0.05
 
         # 开始移动
-        itt.key_down('w')
+        itt.key_down(keybind.KEYBIND_FORWARD)
         self.is_moving = True
         self.move_ahead_timer = AdvanceTimer(duration).start()
         logger.debug(f'start move ahead, duration: {duration}, loop_time: {loop_time}')
@@ -171,12 +171,12 @@ class MoveController(AdvanceThreading):
         self.is_moving = False
         self.move_ahead_timer = None
         self.last_posi = None # 让下次开始移动时，速度延用停止移动前的估算速度
-        itt.key_up('w')
+        itt.key_up(keybind.KEYBIND_FORWARD)
         logger.debug('stop move ahead')
 
     def switch_move(self):
         if self.is_moving and self.move_ahead_timer.reached():
-            itt.key_up('w')
+            itt.key_up(keybind.KEYBIND_FORWARD)
             self.is_moving = False
 
     def loop(self):

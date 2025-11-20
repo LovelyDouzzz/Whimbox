@@ -9,6 +9,7 @@ from whimbox.interaction.interaction_core import itt
 import time
 from whimbox.common.utils.ui_utils import wait_until_appear
 from whimbox.task.daily_task.cvar import *
+from whimbox.common.keybind import keybind
 
 
 zxxy_task_info_list = [
@@ -186,7 +187,7 @@ class ZhaoxiTask(TaskTemplate):
             itt.move_and_click(ButtonZxxyRewarded.click_position())
             time.sleep(0.2)
             if wait_until_appear(TextClickSkip):
-                itt.key_press('f')
+                itt.key_press(keybind.KEYBIND_INTERACTION)
             self.update_task_result(message="成功领取朝夕心愿奖励", data=self.todo_list)
         else:
             self.update_task_result(message="朝夕心愿奖励已被领取过，无需再次领取", data=self.todo_list)

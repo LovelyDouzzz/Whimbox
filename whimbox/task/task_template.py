@@ -89,7 +89,6 @@ class TaskTemplate:
         if len(key_str) == 1:  # 单个字符
             self.key_callbacks[key_str] = callback
         else:
-            # 处理特殊键，如'space', 'esc'等
             try:
                 # 尝试将键名转换为pynput.keyboard.Key对象
                 key_obj = getattr(keyboard.Key, key_str)

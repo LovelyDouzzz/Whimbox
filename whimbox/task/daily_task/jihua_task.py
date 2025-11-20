@@ -47,12 +47,12 @@ class JihuaTask(TaskTemplate):
         
         retry_time = 3
         while retry_time > 0:
-            itt.key_down('w')
+            itt.key_down(keybind.KEYBIND_FORWARD)
             time.sleep(0.8)
-            itt.key_up('w')
+            itt.key_up(keybind.KEYBIND_FORWARD)
             time.sleep(0.2) # 等待弹出按钮
             if itt.get_text_existence(TextJihuatai):
-                itt.key_press('f')
+                itt.key_press(keybind.KEYBIND_INTERACTION)
                 return
             retry_time -= 1
         else:
@@ -106,10 +106,10 @@ class JihuaTask(TaskTemplate):
     @register_step("等待激化完成")
     def step8(self):
         if wait_until_appear(TextFSkip):
-            itt.key_press('f')
+            itt.key_press(keybind.KEYBIND_INTERACTION)
             time.sleep(0.2)
             if wait_until_appear(TextClickSkip):
-                itt.key_press('f')
+                itt.key_press(keybind.KEYBIND_INTERACTION)
                 time.sleep(0.2)
                 itt.key_press('esc')
                 self.update_task_result(message="激化完成")

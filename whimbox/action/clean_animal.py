@@ -1,6 +1,7 @@
 from whimbox.interaction.interaction_core import itt
 from whimbox.action.material_track_base import MaterialTrackBaseTask
 from whimbox.common.utils.ui_utils import *
+from whimbox.common.keybind import keybind
 
 class CleanAnimalTask(MaterialTrackBaseTask):
     def __init__(self, animal_name, expected_count=1, check_stop_func=None):
@@ -9,7 +10,7 @@ class CleanAnimalTask(MaterialTrackBaseTask):
     def pre_play_func(self):
         # 主动按F跳过清洁动画
         if wait_until_appear(TextFSkip):
-            itt.key_press('f')
+            itt.key_press(keybind.KEYBIND_INTERACTION)
     
     def post_play_func(self):
         pass

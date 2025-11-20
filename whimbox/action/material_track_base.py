@@ -8,6 +8,7 @@ from whimbox.view_and_move.utils import *
 from whimbox.view_and_move.view import *
 from whimbox.view_and_move.cvars import *
 from whimbox.common.utils.ui_utils import *
+from whimbox.common.keybind import keybind
 
 class MaterialTrackBaseTask(TaskTemplate):
     def __init__(self, material_name, expected_count=1, check_stop_func=None):
@@ -49,7 +50,7 @@ class MaterialTrackBaseTask(TaskTemplate):
         and self.material_count_dict[self.material_name] < self.expected_count:
             no_material_near = False
             itt.right_down()
-            itt.key_down('w')
+            itt.key_down(keybind.KEYBIND_FORWARD)
             while not timer.reached() and not self.need_stop():
                 if not material_track.is_ability_active():
                     ability_active_times = 0
@@ -71,7 +72,7 @@ class MaterialTrackBaseTask(TaskTemplate):
                         ability_active_times += 1
                     else:
                         itt.right_up()
-                        itt.key_up('w')
+                        itt.key_up(keybind.KEYBIND_FORWARD)
                         self.pre_play_func()
                         time.sleep(0.8) # 等待采集结果文字出现
                         text = itt.ocr_single_line(AreaMaterialGetText)
@@ -89,7 +90,7 @@ class MaterialTrackBaseTask(TaskTemplate):
                 self.log_to_gui("附近已经没有追踪的材料了")
                 break
         itt.right_up()
-        itt.key_up('w')
+        itt.key_up(keybind.KEYBIND_FORWARD)
         if len(self.material_count_dict) == 0:
             self.update_task_result(message="未采集到材料")
             self.log_to_gui("未采集到材料")

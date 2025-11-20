@@ -6,6 +6,7 @@ from whimbox.interaction.interaction_core import itt
 from whimbox.common.utils.ui_utils import *
 from whimbox.common.cvars import DEBUG_MODE
 from whimbox.config.config import global_config
+from whimbox.common.keybind import keybind
 
 class BlessTask(TaskTemplate):
     def __init__(self, level_name=None):
@@ -53,7 +54,7 @@ class BlessTask(TaskTemplate):
     @register_step("等待挑战完成")
     def step5(self):
         if wait_until_appear(TextClickSkip):
-            itt.key_press('f')
+            itt.key_press(keybind.KEYBIND_INTERACTION)
             time.sleep(0.2)
             self.update_task_result(message="祝福闪光幻境完成")
     
