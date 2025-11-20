@@ -33,7 +33,7 @@ cv2.createTrackbar("Sat Max", "TrackBars", init_data["s_max"], 255, empty)
 cv2.createTrackbar("Val Min", "TrackBars", init_data['v_min'], 255, empty)  
 cv2.createTrackbar("Val Max", "TrackBars", init_data['v_max'], 255, empty)  
 
-if __name__ == "__main__" and True:    
+if __name__ == "__main__" and False:    
     from whimbox.common.path_lib import *
     # file_path = "D:\\workspaces\\python\\Whimbox\\whimbox\\assets\\imgs\\Windows\\General\\AreaClickSkip.png"
     # img = cv2.imread(file_path)
@@ -41,13 +41,13 @@ if __name__ == "__main__" and True:
     img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
     lower = 230
     upper = 255
-    # mask = process_with_hsv_limit(img, lower, upper)
     _, img = cv2.threshold(img, lower, upper, cv2.THRESH_BINARY)
+    # mask = process_with_hsv_limit(img, lower, upper)
     cv2.imshow("img_gray", img)
     cv2.waitKey(0)
     cv2.imwrite(os.path.join(ROOT_PATH, "..", "tools", "snapshot", "1763610947.9422815_gray.png"), img)
 
-if __name__ == "__main__" and False:
+if __name__ == "__main__" and True:
     from whimbox.interaction.interaction_core import itt
     from whimbox.ui.ui_assets import *
     from whimbox.common.utils.posi_utils import *

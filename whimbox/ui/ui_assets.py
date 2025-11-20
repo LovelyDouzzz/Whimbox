@@ -7,7 +7,7 @@ from whimbox.ui.template.text_manager import TextTemplate, Text
 AreaPageTitleFeature = Area()
 
 # 主界面、esc菜单、抽卡、商城相关
-IconPageMainFeature = ImgIcon(print_log=LOG_NONE, threshold=0.99)
+IconPageMainFeature = ImgIcon(print_log=LOG_NONE, threshold=0.98, gray_limit=(230, 255))
 IconDungeonFeature = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.98, gray_limit=(230, 255))
 AreaUITime = Area()
 AreaEscEntrances = Area()
@@ -98,7 +98,7 @@ ButtonDigTime20h = Button(print_log=LOG_WHEN_TRUE)
 
 # 朝夕心愿相关
 ButtonZxxyEntrance = Button(print_log=LOG_WHEN_TRUE)
-IconUIZxxy = ImgIcon(print_log=LOG_WHEN_TRUE)
+IconZxxyFeature = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.9, hsv_limit=([20, 15, 250], [30, 190, 255]))
 AreaZxxyScore = Area()
 ButtonZxxyRewarded = Button(print_log=LOG_WHEN_TRUE)
 ButtonZxxyTask1 = Button()
