@@ -127,16 +127,16 @@ class Track:
             self.last_track_posi = track_circle[0:2]
 
             if CV_DEBUG_MODE:
-                print(min_dist)
+                print(f"dist: {euclidean_distance(minimap_center, self.last_track_posi)}")
                 x, y, r = np.uint16(np.around(track_circle))
                 cv2.circle(minimap_img, (x, y), r, (0, 0, 255), 2)
                 cv2.circle(minimap_img, (x, y), 2, (0, 0, 255), 3)
                 cv2.imshow("minimap_img", minimap_img)
                 cv2.waitKey(1)
             
-            # 只追踪身边的材料，太远的就不管了（按布布袜虫的敏感距离推算）
+            # 只追踪身边的材料，避免跑去下一个采集点或者很远的采集点（按布布袜虫的敏感距离推算）
             track_dist = euclidean_distance(minimap_center, track_circle[0:2])
-            if track_dist > 50:
+            if track_dist > 30:
                 self.last_track_posi = None
                 return None
             else:

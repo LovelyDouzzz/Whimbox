@@ -7,10 +7,10 @@ class CleanAnimalTask(MaterialTrackBaseTask):
     def __init__(self, animal_name, expected_count=1, check_stop_func=None):
         super().__init__(animal_name, expected_count, check_stop_func)
 
-    def pre_play_func(self):
-        # 主动按F跳过清洁动画
-        if wait_until_appear(TextFSkip):
-            itt.key_press(keybind.KEYBIND_INTERACTION)
+    # def pre_play_func(self):
+    #     # 主动按F跳过清洁动画
+    #     if wait_until_appear(TextFSkip):
+    #         itt.key_press(keybind.KEYBIND_INTERACTION)
     
     def post_play_func(self):
         pass
