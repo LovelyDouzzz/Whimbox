@@ -51,8 +51,8 @@ class MonsterTask(TaskTemplate):
     def step4(self):
         itt.wait_until_stable(threshold=0.95, timeout=2)
         if wait_until_appear(IconClickSkip):
+            itt.delay(0.2, comment="不加延迟，有些电脑就是不行")
             itt.key_press(keybind.KEYBIND_INTERACTION)
-            time.sleep(0.2)
             self.update_task_result(message="魔物试炼幻境完成")
     
 

@@ -187,6 +187,7 @@ class ZhaoxiTask(TaskTemplate):
             itt.move_and_click(ButtonZxxyRewarded.click_position())
             itt.wait_until_stable(threshold=0.95, timeout=2)
             if wait_until_appear(IconClickSkip):
+                itt.delay(0.2, comment="不加延迟，有些电脑就是不行")
                 itt.key_press(keybind.KEYBIND_INTERACTION)
             self.update_task_result(message="成功领取朝夕心愿奖励", data=self.todo_list)
         else:
