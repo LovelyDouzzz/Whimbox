@@ -181,16 +181,28 @@ class FishingTask(TaskTemplate):
         else:
             res = []
             for fish_name, fish_weight in self.material_count_dict.items():
-                res.append(f"{fish_name}x{fish_weight}kg")
+                res.append(f"{fish_name}x{fish_weight}")
             res_str = ", ".join(res)
             self.update_task_result(message=f"获得{res_str}", data=self.material_count_dict)
 
 
     def fishing_loop(self):
-        itt.right_click()
         # 等待进入钓鱼状态
-        while self.get_current_state() != FishingState.FINISH and not self.need_stop():
-            time.sleep(0.5)
+        is_started = False
+        while not self.need_stop():
+            current_state = self.get_current_state()
+            if current_state != FishingState.FINISH:
+                # 因为有可能被“后台任务-自动钓鱼”调用，已经抛竿进入等待状态，就不需要再右键了
+                if not is_started:
+                    is_started = True
+                    itt.right_click()
+                else:
+                    time.sleep(0.5)
+            else:
+                break
+        # itt.right_click()
+        # while self.get_current_state() != FishingState.FINISH and not self.need_stop():
+        #     time.sleep(0.5)
         # 开始钓鱼
         logger.info("进入钓鱼状态")
         idle_timer = AdvanceTimer(10) # 10秒如果没有鱼，就说明钓鱼位置错了
@@ -235,7 +247,11 @@ class FishingTask(TaskTemplate):
 
 
 if __name__ == "__main__":
-    # CV_DEBUG_MODE = True
-    task = FishingTask()
-    # task.task_run()
-    task.fishing_loop()
+    # # CV_DEBUG_MODE = True
+    # task = FishingTask()
+    # # task.task_run()
+    # task.fishing_loop()
+    from whimbox.common.utils.img_utils import IMG_RATE
+    while True:
+        print(itt.get_img_existence(IconFishingNoFish, ret_mode=IMG_RATE))
+        time.sleep(0.2)

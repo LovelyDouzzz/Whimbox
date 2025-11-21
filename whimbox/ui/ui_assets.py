@@ -42,14 +42,14 @@ AreaMaterialGetText = Area()
 AreaAbilityButton = Area()
 
 # 钓鱼相关
-IconFishingNoFish = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.99) # 鱼掉光时候的图标
+IconFishingNoFish = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.94) # 鱼掉光时候的图标
 AreaFishingDetection = Area()  # B区域（鱼进度检测区域）
-IconFishingFinish = ImgIcon(print_log=LOG_NONE, threshold=0.8)  # 收竿图标
-IconFishingStrike = ImgIcon(print_log=LOG_NONE, threshold=0.8) # 提竿图标
-IconFishingPullLine = ImgIcon(print_log=LOG_NONE, threshold=0.8)  # 拉扯鱼线图标1
-IconFishingPullLineAlt = ImgIcon(print_log=LOG_NONE, threshold=0.8)  # 拉扯鱼线图标2-采星
-IconFishingReelIn = ImgIcon(print_log=LOG_NONE, threshold=0.8)  # 收线图标
-IconFishingSkip = ImgIcon(print_log=LOG_NONE, threshold=0.8) # 跳过
+IconFishingFinish = ImgIcon(print_log=LOG_NONE, threshold=0.75)  # 收竿图标
+IconFishingStrike = ImgIcon(print_log=LOG_NONE, threshold=0.75) # 提竿图标
+IconFishingPullLine = ImgIcon(print_log=LOG_NONE, threshold=0.75)  # 拉扯鱼线图标1
+IconFishingPullLineAlt = ImgIcon(print_log=LOG_NONE, threshold=0.75)  # 拉扯鱼线图标2-采星
+IconFishingReelIn = ImgIcon(print_log=LOG_NONE, threshold=0.75)  # 收线图标
+IconFishingSkip = ImgIcon(print_log=LOG_NONE, threshold=0.75) # 跳过
 
 # 幻境挑战页面
 ButtonHuanjingGo = Button(print_log=LOG_WHEN_TRUE)
@@ -181,3 +181,6 @@ ButtonMonopolyLeaveGrid = Button(print_log=LOG_WHEN_TRUE, threshold=0.99)
 ButtonMonopolyConfirmEvent = Button(print_log=LOG_WHEN_TRUE, threshold=0.99)
 IconMonopolyTicketFeature = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.99)
 ButtonMonopolyTaskFull = Button(print_log=LOG_WHEN_TRUE, threshold=0.99)
+
+# 后台任务
+IconBGFishingFeature = ImgIcon(print_log=LOG_WHEN_TRUE, threshold=0.75, gray_limit=(210, 255))

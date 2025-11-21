@@ -36,7 +36,10 @@ def before_operation(print_log=False):
 
             winname = get_active_window_process_name()
             if winname != PROCESS_NAME:
-                while 1:
+                stop_flag = get_current_stop_flag()
+                while True:
+                    if stop_flag.is_set():
+                        return None
                     if get_active_window_process_name() == PROCESS_NAME:
                         logger.info("恢复操作")
                         break

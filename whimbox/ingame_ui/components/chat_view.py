@@ -279,7 +279,7 @@ class ChatView(QWidget):
                 self.current_worker = None
         elif operation == "add_ai_message":
             # 添加一个正在处理的AI消息作为流式输出的容器
-            message = self.add_message("", 'ai')
+            message = self.add_message(param, 'ai')
             message.is_processing = True
         elif operation == "update_ai_message":
             # 更新最后一条AI消息的内容
@@ -292,6 +292,7 @@ class ChatView(QWidget):
             # 完成AI消息输出
             messages = self.chat_messages
             if messages and messages[-1].message_type == 'ai':
+                messages[-1].content += param
                 messages[-1].is_processing = False
                 # 确保消息内容不为空
                 if not messages[-1].content.strip():

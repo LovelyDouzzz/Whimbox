@@ -545,10 +545,10 @@ class IngameUI(QWidget):
             if active_process_name == PROCESS_NAME and not self.focus_on_game:
                 self.give_back_focus()
     
-    def update_message(self, message: str):
+    def update_message(self, message: str, type="update_ai_message"):
         """更新聊天消息"""
         if self.chat_view:
-            self.chat_view.ui_update_signal.emit("update_ai_message", message)
+            self.chat_view.ui_update_signal.emit(type, message)
 
 
     # def log_poster(self, log_str: str):
