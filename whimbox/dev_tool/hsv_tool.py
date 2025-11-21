@@ -57,7 +57,7 @@ if __name__ == "__main__" and True:
     # img = org.copy()
     while True:
         # img = crop(org, AreaClickSkip.position)
-        img = itt.capture()
+        img = itt.capture(posi=AreaAbilityButton.position)
         # 调用回调函数，获取滑动条的值  
         h_min, h_max, s_min, s_max, v_min, v_max = empty(0)  
         lower = np.array([h_min, s_min, v_min])  

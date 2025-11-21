@@ -178,10 +178,10 @@ class Track:
         判断能力是否激活，通过判断能力按钮外圈是否发光，来判断是否可以使用能力了
         '''
         img = itt.capture(AreaAbilityButton.position)
-        lower = [0, 80, 240]
+        lower = [0, 80, 200]
         upper = [30, 110, 255]
         px_count = count_px_with_hsv_limit(img, lower, upper)
-        if px_count > 200:
+        if px_count > 100:
             return True
         return False
 
@@ -193,6 +193,9 @@ material_track = Track()
 if __name__ == "__main__":
     CV_DEBUG_MODE = True
     # material_track.change_tracking_material("发卡蚱蜢")
+    # while True:
+    #     print(material_track.get_material_track_degree())
+    #     time.sleep(0.2)
     while True:
-        print(material_track.get_material_track_degree())
+        material_track.is_ability_active()
         time.sleep(0.2)

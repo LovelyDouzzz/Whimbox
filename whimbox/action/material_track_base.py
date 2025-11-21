@@ -53,7 +53,6 @@ class MaterialTrackBaseTask(TaskTemplate):
             while not timer.reached() and not self.need_stop():
                 # 通过能力图标是否发光，来判断是否可采集
                 if not material_track.is_ability_active():
-                    itt.key_down(keybind.KEYBIND_FORWARD)
                     ability_active_times = 0
                     degree = material_track.get_material_track_degree()
                     if degree is None:
@@ -67,6 +66,7 @@ class MaterialTrackBaseTask(TaskTemplate):
                     else:
                         material_track_failed_times = 0
                     change_view_to_angle(degree, offset=3, use_last_rotation = True)
+                    itt.key_down(keybind.KEYBIND_FORWARD)
                 else:
                     # 能力图标开始发光，就暂停前进，避免走过头
                     itt.key_up(keybind.KEYBIND_FORWARD)
@@ -90,7 +90,7 @@ class MaterialTrackBaseTask(TaskTemplate):
                         material_track.clear_last_track_posi()
                         self.post_play_func()
                         break
-                time.sleep(0.1)
+                time.sleep(0.05)
             if no_material_near:
                 self.log_to_gui("附近已经没有追踪的材料了")
                 break
