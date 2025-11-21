@@ -177,7 +177,7 @@ class FunctionView(QWidget):
         # 功能复选框 - 每行两个
         feature_configs = [
             (BackgroundFeature.AUTO_FISHING, "自动钓鱼"),
-            (BackgroundFeature.AUTO_DIALOGUE, "自动对话"),
+            # (BackgroundFeature.AUTO_DIALOGUE, "自动对话"),
         ]
         
         # 创建网格布局，每行2个
